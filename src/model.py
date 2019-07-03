@@ -1,8 +1,17 @@
+import os
+import json
 import keras
+import keras.backend as K
+from keras.layers import Input
 from keras.layers import GlobalAveragePooling2D
 from keras.layers import Dense
 from keras.models import Model
+from keras.optimizers import Adam
 from keras.applications.resnet50 import ResNet50
+
+from keras.callbacks import LambdaCallback
+
+from src.custom_loss import weighted_sum_loss
 
 
 def mean_teacher(configs):
@@ -20,7 +29,23 @@ def mean_teacher(configs):
     teacher_model = add_last_few_layers(
         teacher_base_model, configs['num_of_classes'])
 
-    return student_model, teacher_model
+    # ema(student_model, teacher_model, alpha=0.99)
+
+    src_input = student_model.input
+    tgt_input = teacher_model.input
+
+    src_output_student = student_model(src_input)
+    tgt_output_student = student_model(tgt_input)
+    tgt_output_teacher = teacher_model(tgt_input)
+    sq_diff_layer = K.sum(K.square(tgt_output_student - tgt_output_teacher))
+    model = Model(inputs=[src_input, tgt_input], outputs=src_output_student)
+
+    model.compile(optimizer=Adam(configs['lr']),
+                  loss=weighted_sum_loss(
+                      sq_diff_layer=sq_diff_layer, ratio=configs['ratio']),
+                  metrics=['accuracy'])
+
+    return model, student_model, teacher_model
 
 
 def add_last_few_layers(base_model, num_of_classes):
@@ -29,7 +54,7 @@ def add_last_few_layers(base_model, num_of_classes):
     '''
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
-    x = Dense(1024, activation='relu')(x)
+    # x = Dense(1024, activation='relu')(x)
     output = Dense(num_of_classes, activation='softmax')(x)
 
     model = Model(inputs=base_model.input,
@@ -59,3 +84,17 @@ def ema(student_model, teacher_model, alpha=0.99):
         new_layer = alpha*(teacher_weights[i]) + (1-alpha)*layers
         new_layers.append(new_layer)
     teacher_model.set_weights(new_layers)
+
+
+if __name__ == "__main__":
+    with open(os.path.join(os.getcwd(), 'configs', 'model.json')) as f:
+        model_config = json.load(f)
+
+    mean_teacher_model, student_model, teacher_model = mean_teacher(
+        model_config)
+
+    print('mean teacher model', mean_teacher_model.summary())
+    print('-'*80)
+    print('teacher model', teacher_model.summary())
+    print('-'*80)
+    print('student model', student_model.summary())

@@ -1,4 +1,5 @@
 /data
+/reduced_data
 /src/__pycache__
 /notebook/.ipynb_checkpoints
 /weights
