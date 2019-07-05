@@ -11,10 +11,12 @@ def mean_teacher_data_gen(sup_gen, unsup_gen, batch_size, target_size):
     real_path = os.path.join(os.getcwd(), 'reduced_data', 'real')
 
     sup_data_gen = sup_gen.flow_from_directory(real_path,
+                                               seed=99,
                                                target_size=target_size,
                                                class_mode='categorical')
 
     unsup_data_gen = unsup_gen.flow_from_directory(syn_path,
+                                                   seed=99,
                                                    target_size=target_size,
                                                    class_mode='categorical')
 
