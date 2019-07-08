@@ -45,8 +45,20 @@ if __name__ == "__main__":
         student_model, teacher_model, alpha=0.99))
     callbacks = [checkpoint, tensorboard, ema_callback]
 
-    sup_gen = ImageDataGenerator()
-    unsup_gen = ImageDataGenerator()
+    with open(os.path.join(os.getcwd(), 'configs', 'augmentation.json')) as f:
+        aug_config = json.load(f)
+    sup_gen = ImageDataGenerator(featurewise_center=aug_config['featurewise_center'],
+                                 featurewise_std_normalization=aug_config['featurewise_std_normalization'],
+                                 rotation_range=aug_config['rotation_range'],
+                                 width_shift_range=aug_config['width_shift_range'],
+                                 height_shift_range=aug_config['height_shift_range'],
+                                 horizontal_flip=aug_config['horizontal_flip'])
+    unsup_gen = ImageDataGenerator(featurewise_center=aug_config['featurewise_center'],
+                                   featurewise_std_normalization=aug_config['featurewise_std_normalization'],
+                                   rotation_range=aug_config['rotation_range'],
+                                   width_shift_range=aug_config['width_shift_range'],
+                                   height_shift_range=aug_config['height_shift_range'],
+                                   horizontal_flip=aug_config['horizontal_flip'])
     mean_teacher_generator = mean_teacher_data_gen(
         sup_gen, unsup_gen, training_config['batch_size'], training_config['target_size'])
 

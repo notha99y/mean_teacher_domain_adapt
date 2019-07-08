@@ -1,7 +1,7 @@
 {
-    "epochs": 1000,
+    "epochs": 150,
     "batch_size": 32,
-    "lr": 1e-3,
+    "lr": 1e-4,
     "target_size": [
         224,
         224

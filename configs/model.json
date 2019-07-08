@@ -4,7 +4,7 @@
         224,
         3
     ],
-    "num_of_classes": 12,
+    "num_of_classes": 3,
     "lr": 1e-3,
     "ratio": 0.5
 }

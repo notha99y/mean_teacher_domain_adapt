@@ -17,3 +17,12 @@ def get_distribution(data_path, label, color):
 
     sns.catplot(x='count', y=label, kind='bar',
                 data=class_freq_df, color=color)
+
+
+def get_freq(array):
+    freq = dict()
+    for key in set(array):
+        freq[key] = 0
+    for i in array:
+        freq[i] += 1
+    return freq

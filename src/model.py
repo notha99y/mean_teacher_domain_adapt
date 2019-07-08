@@ -38,7 +38,8 @@ def mean_teacher(configs):
     tgt_output_student = student_model(tgt_input)
     tgt_output_teacher = teacher_model(tgt_input)
     sq_diff_layer = K.sum(K.square(tgt_output_student - tgt_output_teacher))
-    model = Model(inputs=[src_input, tgt_input], outputs=src_output_student)
+    model = Model(inputs=[src_input, tgt_input],
+                  outputs=src_output_student, name='mean_teacher')
 
     model.compile(optimizer=Adam(configs['lr']),
                   loss=weighted_sum_loss(
