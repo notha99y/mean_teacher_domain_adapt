@@ -33,7 +33,7 @@ if __name__ == "__main__":
     weights_dir = 'weights/' + mean_teacher_model.name + \
         '-{epoch:02d}-{loss:.2f}.hdf5'
     checkpoint = ModelCheckpoint(
-        filepath=weights_dir, monitor='loss', save_best_only=True, save_weights_only=False, mode='auto', period=1)
+        filepath=weights_dir, monitor='loss', save_best_only=False, save_weights_only=False, mode='auto', period=1)
     tensorboard = TensorBoard(log_dir=os.path.join(os.getcwd(), 'logs'), histogram_freq=0, batch_size=32, write_graph=True, write_grads=True, write_images=True,
                               embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch')
     # cycliclr = CyclicLR(
@@ -49,12 +49,14 @@ if __name__ == "__main__":
         aug_config = json.load(f)
     sup_gen = ImageDataGenerator(featurewise_center=aug_config['featurewise_center'],
                                  featurewise_std_normalization=aug_config['featurewise_std_normalization'],
+                                 rescale=1./255,
                                  rotation_range=aug_config['rotation_range'],
                                  width_shift_range=aug_config['width_shift_range'],
                                  height_shift_range=aug_config['height_shift_range'],
                                  horizontal_flip=aug_config['horizontal_flip'])
     unsup_gen = ImageDataGenerator(featurewise_center=aug_config['featurewise_center'],
                                    featurewise_std_normalization=aug_config['featurewise_std_normalization'],
+                                   rescale=1./255,
                                    rotation_range=aug_config['rotation_range'],
                                    width_shift_range=aug_config['width_shift_range'],
                                    height_shift_range=aug_config['height_shift_range'],

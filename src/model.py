@@ -65,7 +65,7 @@ def add_last_few_layers(base_model, num_of_classes):
 
 def ema(student_model, teacher_model, alpha=0.99):
     '''
-    Calculates the exponential moving average of the student model weights and updates the teacher model weights\
+    Calculates the exponential moving average of the student model weights and updates the teacher model weights
 
     formula:
     t_i = alpha * t_{i-1} + (1 - alpha) * s_i, with default alpha = 0.99

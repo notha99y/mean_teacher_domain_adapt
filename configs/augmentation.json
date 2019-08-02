@@ -1,6 +1,6 @@
 {
-    "featurewise_center": true,
-    "featurewise_std_normalization": true,
+    "featurewise_center": false,
+    "featurewise_std_normalization": false,
     "rotation_range": 20,
     "width_shift_range": 0.2,
     "height_shift_range": 0.2,
