@@ -30,7 +30,7 @@ def mean_teacher_data_gen(src_gen, tgt_gen, batch_size, target_size, train_or_va
                                                target_size=target_size,
                                                class_mode='categorical')
     count = 0
-    while src_data_gen.n//src_data_gen.batch_size + 1:
+    while count <= src_data_gen.n//src_data_gen.batch_size + 1:
 
         src_img, src_labels = src_data_gen.next()
         tgt_img, _ = tgt_data_gen.next()
